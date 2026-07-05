@@ -1,0 +1,113 @@
+
+  spring:
+    security:
+      oauth2:
+        resourceserver:
+          jwt:
+            issuer-uri: ${JWT_ISSUER_URI}
+    rabbitmq:
+      host: ${RABBITMQ_HOST}
+      port: ${RABBITMQ_PORT}
+      username: ${RABBITMQ_USERNAME}
+      password: ${RABBITMQ_PASSWORD}
+      virtual-host: ${RABBITMQ_VIRTUAL_HOST}
+      ssl:
+        enabled: true
+      requested-heartbeat: 30
+
+
+#    config:
+#      import: optional:file:.env.properties
+    application:
+      name: Bank-app
+    datasource:
+      url: ${DB_URL}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        maximum-pool-size: 20
+        minimum-idle: 5
+        connection-timeout: 30000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+        keepalive-time: 300000
+
+    flyway:
+      url: ${DB_URL}
+      user: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      baseline-on-migrate: true
+      baseline-description: "init"
+      baseline-version: 0
+      clean-disabled: true
+    jpa:
+      hibernate:
+        ddl-auto: ${DDL_AUTO}
+      properties:
+        hibernate:
+          show_sql: false
+          format_sql: false
+    mail:
+      host:  ${MAIL_HOST}
+      port:  ${MAIL_PORT}
+      username: ${MAIL_USERNAME}
+      password:  ${MAIL_PASSWORD}
+      properties:
+        mail.smtp.auth: true
+        mail.smtp.starttls.enable: true
+    data:
+      redis:
+        host: ${REDIS_HOST}
+        port: ${REDIS_PORT}
+        password: ${REDIS_PASSWORD}
+
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health,info,metrics,prometheus
+
+    metrics:
+      enable:
+        hikari: true
+    endpoint:
+      health:
+        show-details: always
+
+  server:
+    port: ${SERVER_PORT}
+
+  transfer:
+    queue: ${TRANSFER_QUEUE}
+    exchange: ${TRANSFER_EXCHANGE}
+    routing-key: ${TRANSFER_ROUTING_KEY}
+
+  deposit:
+    queue: ${DEPOSIT_QUEUE}
+    exchange: ${DEPOSIT_EXCHANGE}
+    routing-key: ${DEPOSIT_ROUTING_KEY}
+
+  withdraw:
+    queue: ${WITHDRAW_QUEUE}
+    exchange: ${WITHDRAW_EXCHANGE}
+    routing-key: ${WITHDRAW_ROUTING_KEY}
+
+  account:
+    queue: ${ACCOUNT_QUEUE}
+    exchange: ${ACCOUNT_EXCHANGE}
+    routing-key: ${ACCOUNT_ROUTING_KEY}
+
+  statement:
+    queue: ${STATEMENT_QUEUE}
+    exchange: ${STATEMENT_EXCHANGE}
+    routing-key: ${STATEMENT_ROUTING_KEY}
+
+  aws:
+    region: ${AWS_REGION}
+    accessKey: ${AWS_ACCESS_KEY_ID}
+    secretKey: ${AWS_SECRET_ACCESS_KEY}
+    cognito:
+      user-pool-id: ${AWS_COGNITO_USER_POOL}
+      client-id: ${AWS_COGNITO_CLIENT_ID}
+      client-secret: ${AWS_COGNITO_CLIENT_SECRET}
