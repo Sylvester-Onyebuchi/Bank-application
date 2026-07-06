@@ -212,7 +212,7 @@ class TransactionServiceTest {
         User user = user("user-123", "Sender", "User", "sender@example.com", UserStatus.ACTIVE);
         byte[] pdf = "statement-pdf".getBytes();
         when(userRepository.findById("user-123")).thenReturn(Optional.of(user));
-        when(bankStatement.generateStatement("HR1", "2026-01-01", "2026-01-31", "user-123", user.getUsername(), user.getAddress()))
+        when(bankStatement.generateStatement("HR1", "2026-01-01", "2026-01-31", "user-123", user.getFullName(), user.getAddress()))
                 .thenReturn(pdf);
 
         transactionService.statementOfAccount("HR1", "2026-01-01", "2026-01-31", "user-123");

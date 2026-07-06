@@ -15,7 +15,6 @@
         enabled: true
       requested-heartbeat: 30
 
-
 #    config:
 #      import: optional:file:.env.properties
     application:
