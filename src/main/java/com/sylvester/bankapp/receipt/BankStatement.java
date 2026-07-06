@@ -10,9 +10,7 @@ import com.sylvester.bankapp.account.entity.Account;
 import com.sylvester.bankapp.account.repository.AccountRepository;
 import com.sylvester.bankapp.transaction.entity.Transaction;
 import com.sylvester.bankapp.transaction.repository.TransactionRepository;
-import com.sylvester.bankapp.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -25,7 +23,7 @@ public class BankStatement {
 
     private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
-    private final UserRepository userRepository;
+
 
 
     public byte[] generateStatement(
@@ -34,7 +32,7 @@ public class BankStatement {
             String endDate,
             String userId,
             String username,
-            String addres
+            String address
     ) throws Exception {
 
         LocalDate start = LocalDate.parse(startDate, DateTimeFormatter.ISO_DATE);
@@ -46,14 +44,12 @@ public class BankStatement {
                 () -> new Exception("Account not found")
         );
 
-
-        List<Transaction> transactions = transactionRepository.findAll().stream()
-                .filter(t -> t.getSenderAccount().getAccountNumber().equals(account.getAccountNumber())
-                        || t.getRecipientAccount().getAccountNumber().equals(account.getAccountNumber())
-                )
-                .filter(transaction -> !transaction.getCreatedDate().isBefore(start) &&
-                        !transaction.getCreatedDate().isAfter(end))
-                .toList();
+        List<Transaction> transactions =
+                transactionRepository.findAccountTransactionsBetweenDates(
+                        account.getAccountNumber(),
+                        start,
+                        end
+                );
 
        ByteArrayOutputStream base = new ByteArrayOutputStream();
         Rectangle statementSize = new Rectangle(PageSize.A4);
@@ -97,8 +93,8 @@ public class BankStatement {
         PdfPCell space = new PdfPCell();
         space.setBorder(0);
 
-        PdfPCell address = new PdfPCell(new Phrase("Customer Address: "+addres));
-        address.setBorder(0);
+        PdfPCell customerAddress = new PdfPCell(new Phrase("Customer Address: "+address));
+        customerAddress.setBorder(0);
 
 
         PdfPTable transactionTable = new PdfPTable(4);

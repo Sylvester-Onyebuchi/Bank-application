@@ -235,6 +235,7 @@ public class TransactionService {
                     .amount(request.amount())
                     .transactionId(UUID.randomUUID().toString())
                     .senderAccount(accountOwner)
+                    .recipientAccount(null)
                     .createdDate(LocalDate.now())
                     .transactionType("WITHDRAWAL")
                     .status(TransactionStatus.SUCCESS)
@@ -277,7 +278,8 @@ public class TransactionService {
             Transaction transaction = Transaction.builder()
                     .amount(request.amount())
                     .transactionId(UUID.randomUUID().toString())
-                    .senderAccount(accountOwner)
+                    .senderAccount(null)
+                    .recipientAccount(accountOwner)
                     .createdDate(LocalDate.now())
                     .transactionType("DEPOSIT")
                     .status(TransactionStatus.SUCCESS)
@@ -310,6 +312,7 @@ public class TransactionService {
         return tx.getReceiptPdf();
     }
 
+    @Transactional(readOnly = true)
     public void statementOfAccount(String accountNumber, String startDate, String endDate, String userId) throws Exception {
 
         var user = userRepository.findById(userId).orElseThrow(
@@ -317,7 +320,7 @@ public class TransactionService {
         );
 
 
-        byte[] pdfBytes = bankStatement.generateStatement(accountNumber, startDate, endDate,userId, user.getUsername(),user.getAddress());
+        byte[] pdfBytes = bankStatement.generateStatement(accountNumber, startDate, endDate,userId, user.getFullName(),user.getAddress());
 
         StatementEvent statementEvent = new StatementEvent(
                 user.getEmail(),
